@@ -1,0 +1,7 @@
+config,bot,dates,total_trades,win_rate,avg_rr,profit_factor,max_consec_losses,max_drawdown_pct,sharpe_ratio,avg_trade_duration_min,avg_lot_size,total_pnl,final_balance,net_return_pct
+A: No Trending (current),Bot 1: London 1%,2025-09-16 -> 2025-12-16,85,30.59,1.51,0.665,9,-21.59,-24.753,23.0,0.02,-181.78,818.22,-18.18
+A: No Trending (current),Bot 2: London 2%,2025-09-16 -> 2025-12-16,85,30.59,1.48,0.652,9,-42.84,-26.207,23.0,0.039,-365.61,634.39,-36.56
+A: No Trending (current),Bot 3: London+NY 1%,2025-09-16 -> 2025-12-16,178,35.39,1.46,0.8,12,-24.5,-12.352,26.4,0.018,-217.85,782.15,-21.78
+B: Trending Allowed,Bot 1: London 1%,2025-09-16 -> 2025-12-16,149,30.87,1.48,0.662,11,-31.28,-26.097,20.9,0.018,-299.9,700.1,-29.99
+B: Trending Allowed,Bot 2: London 2%,2025-09-16 -> 2025-12-16,149,30.87,1.42,0.635,11,-56.02,-29.058,20.9,0.031,-547.31,452.69,-54.73
+B: Trending Allowed,Bot 3: London+NY 1%,2025-09-16 -> 2025-12-16,331,35.95,1.45,0.812,11,-35.21,-10.444,31.9,0.017,-349.78,650.22,-34.98

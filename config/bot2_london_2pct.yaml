@@ -1,0 +1,57 @@
+# Bot 2: London Session — 2% Risk — BB Mean Reversion
+# Ranging + Strong Trend regimes | London hours (07:00-12:59 UTC)
+
+risk_management:
+  risk_per_trade_pct: 2.0
+  daily_loss_limit_pct: 8.0
+  weekly_loss_limit_pct: 15.0
+  monthly_drawdown_alert_pct: 20.0
+  absolute_max_drawdown_pct: 35.0
+  max_open_positions: 1
+  max_same_direction: 1
+  min_lot_size: 0.01
+  max_lot_size: 2.00
+  max_spread_points: 400
+  max_trades_per_day: 20
+  min_time_between_trades_sec: 60
+
+regime_detection:
+  adx_period: 14
+  adx_ranging_threshold: 20
+  adx_trending_threshold: 30
+  adx_strong_threshold: 50
+  check_interval_minutes: 1
+
+bb_mean_reversion:
+  enabled: true
+  timeframe: M1
+  bb_period: 20
+  bb_std: 2.0
+  rsi_period: 14
+  rsi_oversold: 30
+  rsi_overbought: 70
+  sl_atr_mult: 1.0
+  tp_atr_mult: 1.5
+  atr_period: 14
+  allowed_regimes:
+    - ranging
+    - strong_trend
+  blocked_regimes:
+    - transitional
+    - trending
+  sessions:
+    - london
+  session_hours:
+    london_start: 7
+    london_end: 13
+
+general:
+  bot_name: "HFT-London-2%"
+  bot_id: "hft_london_2pct"
+  check_interval_seconds: 5
+  log_level: INFO
+  db_path: data/hft_london_2pct.db
+  timezone: UTC
+  magic_number: 234568
+  comment_prefix: "HF2_"
+  api_port: 8002

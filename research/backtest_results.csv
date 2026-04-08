@@ -1,0 +1,8 @@
+strategy,total_trades,win_rate,avg_rr,profit_factor,max_consecutive_losses,max_drawdown_pct,sharpe_ratio,avg_trade_duration_min,total_pnl,avg_pnl_per_trade,net_return_pct
+A. EMA Momentum Scalper,3729,42.64,1.31,0.977,13.0,-47.91,-1.527,11.8,-22411.25,-6.01,-22.41
+B. BB Mean Reversion,3072,41.05,1.48,1.032,12.0,-21.53,2.438,7.4,22595.32,7.36,22.6
+C. VWAP Bounce Scalper,360,36.11,1.74,0.983,8.0,-9.84,-0.981,15.7,-1600.81,-4.45,-1.6
+D. London Open Momentum,47,36.17,1.64,0.93,8.0,-19.96,-0.972,203.6,-3905.05,-83.09,-3.91
+E. NY Session Scalper,11,27.27,0.5,0.189,7.0,-8.02,-102.533,16.3,-6827.05,-620.64,-6.83
+F. London Fix Fade,65,40.0,1.07,0.716,8.0,-9.84,-18.25,21.8,-6736.27,-103.63,-6.74
+G. Micro Range Breakout,0,,,,,,,,,,

@@ -1,0 +1,9 @@
+.env*
+!.env.example
+*.db
+*.log
+__pycache__/
+*.pyc
+data/
+scripts/
+*.exe

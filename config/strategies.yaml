@@ -1,0 +1,155 @@
+# HFT Gold Trading Bot — Strategy & Risk Configuration
+# 1-Minute Timeframe High-Frequency Strategies
+# All monetary values are in PERCENTAGES, not dollar amounts
+
+# ─── RISK MANAGEMENT (applies globally) ─────────────────────────────────────
+risk_management:
+  risk_per_trade_pct: 1.0            # % of equity risked per trade (lower for HFT)
+  daily_loss_limit_pct: 3.0          # % daily loss → circuit breaker stops all trading
+  weekly_loss_limit_pct: 8.0         # % weekly loss → manual review required
+  monthly_drawdown_alert_pct: 15.0   # % monthly drawdown → reduce to 0.5% risk/trade
+  absolute_max_drawdown_pct: 20.0    # % from peak equity → full stop, strategy review
+  max_open_positions: 3              # max simultaneous open positions (HFT can have more)
+  max_same_direction: 2              # max positions in same direction
+  news_blackout_minutes: 15          # pause trading before NFP, CPI, FOMC, GDP
+  min_lot_size: 0.01                 # micro lot minimum
+  max_lot_size: 0.10                 # cap for demo account safety
+  max_trades_per_day: 20             # HFT cap to prevent overtrading
+  min_time_between_trades_sec: 60    # minimum seconds between new entries
+  max_spread_points: 30              # skip entries when spread is too wide
+
+# ─── REGIME DETECTION ────────────────────────────────────────────────────────
+regime_detection:
+  adx_period: 14
+  adx_ranging_threshold: 20          # ADX < 20 = ranging market
+  adx_trending_threshold: 30         # ADX 20-30 = transitional
+  adx_strong_threshold: 50           # ADX > 50 = strong trend
+  check_interval_minutes: 5          # faster regime checks for HFT
+  # Volatility regime via ATR percentile
+  atr_period: 14
+  atr_low_percentile: 25             # below 25th = low vol
+  atr_high_percentile: 75            # above 75th = high vol
+
+# ─── STRATEGY: EMA MOMENTUM SCALPER ─────────────────────────────────────────
+# Fast EMA crossover with RSI momentum filter on 1m
+ema_momentum_scalper:
+  enabled: true
+  timeframe: M1
+  ema_fast: 9                        # fast EMA period
+  ema_slow: 21                       # slow EMA period
+  rsi_period: 7                      # fast RSI for momentum
+  rsi_buy_threshold: 50              # RSI must be above for longs
+  rsi_sell_threshold: 50             # RSI must be below for shorts
+  atr_period: 14
+  sl_atr_mult: 1.5                   # SL = 1.5 × ATR(14)
+  tp_atr_mult: 2.0                   # TP = 2.0 × ATR(14)
+  min_adx: 20                        # needs some trend strength
+  sessions: ["london", "newyork"]    # best during active sessions
+  hard_exit_utc: "20:00"
+
+# ─── STRATEGY: BOLLINGER BAND MEAN REVERSION ────────────────────────────────
+# BB touch + RSI extremes for mean reversion scalps
+bollinger_mean_reversion:
+  enabled: true
+  timeframe: M1
+  bb_period: 20                      # Bollinger Band lookback
+  bb_std: 2.0                        # standard deviations
+  rsi_period: 14
+  rsi_oversold: 30                   # RSI below = oversold → buy
+  rsi_overbought: 70                 # RSI above = overbought → sell
+  atr_period: 14
+  sl_atr_mult: 1.0                   # tighter SL for mean reversion
+  tp_atr_mult: 1.5                   # modest TP target
+  min_adx: 0                         # works in ranging markets too
+  max_adx: 30                        # avoid strong trends (mean reversion fails)
+  sessions: ["all"]
+  hard_exit_utc: "20:00"
+
+# ─── STRATEGY: VWAP BOUNCE SCALPER ──────────────────────────────────────────
+# Trades bounces off the session VWAP with volume confirmation
+vwap_bounce_scalper:
+  enabled: true
+  timeframe: M1
+  vwap_proximity_atr_mult: 0.3      # price must be within 0.3 × ATR of VWAP
+  volume_spike_mult: 1.5            # volume must be 1.5× 20-bar average
+  rsi_period: 14
+  atr_period: 14
+  sl_atr_mult: 0.5                   # tight SL beyond VWAP
+  tp_atr_mult: 2.0                   # 4:1 potential RR
+  min_adx: 15                        # needs some directional bias
+  sessions: ["london", "newyork"]
+  hard_exit_utc: "20:00"
+
+# ─── STRATEGY: LONDON OPEN MOMENTUM ─────────────────────────────────────────
+# Time-based: breakout of pre-London consolidation at 08:00 UTC
+london_open_momentum:
+  enabled: true
+  timeframe: M1
+  consolidation_start_utc: "07:00"   # pre-London range start
+  consolidation_end_utc: "07:59"     # pre-London range end
+  entry_window_start_utc: "08:00"    # London open
+  entry_window_end_utc: "08:15"      # 15-minute entry window
+  atr_period: 14
+  breakout_buffer_atr_mult: 0.2      # buffer above/below range for entry
+  sl_location: "opposite_range"      # SL at opposite side of range
+  tp_range_mult: 1.5                 # TP = 1.5 × range width
+  min_range_atr_mult: 0.3            # skip if range too narrow
+  max_range_atr_mult: 2.0            # skip if range too wide
+  sessions: ["london"]
+  hard_exit_utc: "13:00"
+
+# ─── STRATEGY: NY SESSION SCALPER ────────────────────────────────────────────
+# Time-based: momentum burst in first 30 min of NY session
+ny_session_scalper:
+  enabled: true
+  timeframe: M1
+  entry_window_start_utc: "13:30"    # NY open
+  entry_window_end_utc: "14:00"      # 30-minute window
+  candle_count: 5                    # look at first 5 candles
+  min_consecutive_candles: 3         # need 3+ in same direction
+  volume_increase_required: true     # volume must be increasing
+  atr_period: 14
+  sl_atr_mult: 1.5
+  tp_atr_mult: 2.5
+  sessions: ["newyork"]
+  hard_exit_utc: "17:00"
+
+# ─── STRATEGY: LONDON FIX FADE ──────────────────────────────────────────────
+# Time-based: fade the pre-fix move at 10:30 AM GMT
+london_fix_fade:
+  enabled: true
+  timeframe: M1
+  pre_fix_start_utc: "10:00"         # track direction from here
+  fix_time_utc: "10:30"              # London AM gold fix
+  entry_window_end_utc: "10:35"      # 5-minute entry window after fix
+  min_pre_fix_move_atr_mult: 0.5     # minimum pre-fix directional move
+  atr_period: 14
+  sl_atr_mult: 2.0                   # wider SL for fade
+  tp_atr_mult: 3.0                   # 1.5:1 RR
+  sessions: ["london"]
+  hard_exit_utc: "13:00"
+
+# ─── STRATEGY: MICRO RANGE BREAKOUT ─────────────────────────────────────────
+# Detects tight consolidation on 1m and trades the breakout
+micro_range_breakout:
+  enabled: true
+  timeframe: M1
+  consolidation_candles: 12          # look for 12-candle consolidation
+  max_range_atr_mult: 0.5           # range must be < 0.5 × ATR(50)
+  higher_tf_ema_period: 200          # EMA(200) on 5m for direction filter
+  higher_tf: M5                      # higher timeframe for trend
+  atr_period: 14
+  atr_long_period: 50                # longer ATR for range comparison
+  sl_location: "mid_range"           # SL at middle of range
+  tp_range_mult: 2.0                 # TP = 2 × range width
+  sessions: ["london", "newyork"]
+  hard_exit_utc: "20:00"
+
+# ─── GENERAL SETTINGS ───────────────────────────────────────────────────────
+general:
+  check_interval_seconds: 5          # poll every 5 seconds for HFT (faster than goldbot)
+  log_level: INFO
+  db_path: data/hftbot.db
+  timezone: UTC
+  bot_name: HFTBot
+  magic_number: 234567               # different from GoldBot (123456)

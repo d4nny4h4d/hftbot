@@ -1,0 +1,60 @@
+# Bot 3: London + NY Session — 1% Risk — BB Mean Reversion
+# Ranging + Strong Trend regimes | London+NY hours (07:00-19:59 UTC)
+
+risk_management:
+  risk_per_trade_pct: 1.0
+  daily_loss_limit_pct: 5.0
+  weekly_loss_limit_pct: 10.0
+  monthly_drawdown_alert_pct: 15.0
+  absolute_max_drawdown_pct: 25.0
+  max_open_positions: 1
+  max_same_direction: 1
+  min_lot_size: 0.01
+  max_lot_size: 1.00
+  max_spread_points: 400
+  max_trades_per_day: 20
+  min_time_between_trades_sec: 60
+
+regime_detection:
+  adx_period: 14
+  adx_ranging_threshold: 20
+  adx_trending_threshold: 30
+  adx_strong_threshold: 50
+  check_interval_minutes: 1
+
+bb_mean_reversion:
+  enabled: true
+  timeframe: M1
+  bb_period: 20
+  bb_std: 2.0
+  rsi_period: 14
+  rsi_oversold: 30
+  rsi_overbought: 70
+  sl_atr_mult: 1.0
+  tp_atr_mult: 1.5
+  atr_period: 14
+  allowed_regimes:
+    - ranging
+    - strong_trend
+  blocked_regimes:
+    - transitional
+    - trending
+  sessions:
+    - london
+    - newyork
+  session_hours:
+    london_start: 7
+    london_end: 13
+    newyork_start: 13
+    newyork_end: 20
+
+general:
+  bot_name: "HFT-LDN+NY-1%"
+  bot_id: "hft_ldnny_1pct"
+  check_interval_seconds: 5
+  log_level: INFO
+  db_path: data/hft_ldnny_1pct.db
+  timezone: UTC
+  magic_number: 234569
+  comment_prefix: "HF3_"
+  api_port: 8003

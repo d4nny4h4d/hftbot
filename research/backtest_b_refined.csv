@@ -1,0 +1,4 @@
+bot,dates,total_trades,win_rate,avg_rr,profit_factor,max_consecutive_losses,max_drawdown_pct,sharpe_ratio,avg_trade_duration_min,avg_lot_size,total_pnl,avg_pnl_per_trade,final_balance,net_return_pct
+Bot 1: London 1%,2025-12-16 -> 2026-03-16,278,50.0,1.43,1.425,11,-16.93,53.504,3.7,0.05,815.13,2.93,1815.13,81.51
+Bot 2: London 2%,2025-12-16 -> 2026-03-16,278,50.0,1.42,1.421,11,-31.36,51.707,3.7,0.125,2092.29,7.53,3092.29,209.23
+Bot 3: London+NY 1%,2025-12-16 -> 2026-03-16,626,46.49,1.44,1.254,12,-25.44,32.543,3.7,0.045,1279.38,2.04,2279.38,127.94
