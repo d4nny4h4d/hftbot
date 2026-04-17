@@ -54,13 +54,24 @@ class BBMeanReversion(BaseStrategy):
             end = session_hours.get("newyork_end", 20)
             self.allowed_hours.update(range(start, end))
 
+        # ─── Paper-trading optimization: blocked hours (added 2026-04-17) ───
+        # Analysis of 119 live trades (30 days) showed:
+        #   - Hour 07 UTC: 23 trades, 30% WR, avg -$2.11 → BLOCK
+        #   - Hour 13 UTC: 10 trades, 10% WR, avg -$4.30 → BLOCK
+        #   - Best hours: 09, 11, 16, 17 UTC (60-100% WR)
+        # Backtest: blocking these two hours reduces loss from -$85 to near zero
+        self.blocked_hours = set(config.get("blocked_hours", []) or [])
+        if self.blocked_hours:
+            self.allowed_hours -= self.blocked_hours
+
         # Regime filter
         self.blocked_regimes = set(config.get("blocked_regimes", []))
 
         logger.info(
-            "BB Reversion: BB(%d,%.1f), RSI(%d), SL=%.1fxATR, TP=%.1fxATR, hours=%s",
+            "BB Reversion: BB(%d,%.1f), RSI(%d), SL=%.1fxATR, TP=%.1fxATR, hours=%s, blocked=%s",
             self.bb_period, self.bb_std, self.rsi_period,
             self.sl_atr_mult, self.tp_atr_mult, sorted(self.allowed_hours),
+            sorted(self.blocked_hours) if self.blocked_hours else "none",
         )
 
     @staticmethod

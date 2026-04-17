@@ -47,6 +47,11 @@ bb_mean_reversion:
     london_end: 13
     newyork_start: 13
     newyork_end: 20
+  # Paper-trading optimization (2026-04-17): hours 07 and 13 UTC were clear
+  # money-losers in the LDN+NY variant (30% and 10% WR respectively over 119
+  # trades). Blocking both reduced baseline loss of -$85 to near zero in
+  # backtest. Most profitable hours: 09, 11, 16, 17 UTC (60-100% WR).
+  blocked_hours: [7, 13]
 
 general:
   bot_name: "HFT-LDN+NY-1%"

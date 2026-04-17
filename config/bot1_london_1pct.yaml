@@ -44,6 +44,9 @@ bb_mean_reversion:
   session_hours:
     london_start: 7
     london_end: 13
+  # Paper-trading optimization (2026-04-17): hour 07 UTC showed 30% WR across
+  # all 3 bots, avg -$2/trade — blocking recovers ~$50 over 30 days.
+  blocked_hours: [7]
 
 general:
   bot_name: "HFT-London-1%"

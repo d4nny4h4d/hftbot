@@ -44,6 +44,10 @@ bb_mean_reversion:
   session_hours:
     london_start: 7
     london_end: 13
+  # Paper-trading optimization (2026-04-17): hours 07-08 UTC were losing in
+  # London 2% variant (32% WR, avg -$3/trade). Blocking both recovered ~$85
+  # in backtest over the paper-trading period.
+  blocked_hours: [7, 8]
 
 general:
   bot_name: "HFT-London-2%"
